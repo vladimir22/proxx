@@ -104,7 +104,7 @@ public class Main {
             Cell cell = board[x][y];
 
             if (cell.isBlackHole()) {
-                System.out.println("Game Over: Black Hole has FIRED!");
+                System.out.println("Game Over! Black Hole has been opened ...");
                 printBoard(x,y, true);
                 return;
             }
@@ -131,25 +131,25 @@ public class Main {
     }
 
 
-    public static int openAdjacentCells(int xToOpen, IntFunction<Integer> xToOpenFunction, int yToOpen, IntFunction<Integer> yToOpenFunction) {
+    public static void openAdjacentCells(int xToOpen, IntFunction<Integer> xToOpenFunction, int yToOpen, IntFunction<Integer> yToOpenFunction) {
         int x = xToOpenFunction.apply(xToOpen);
         int y = yToOpenFunction.apply(yToOpen);
 
         if (x >= MAX_SIZE || y >= MAX_SIZE || x < 0 || y < 0) {
-            return 0;
+            return;
         }
 
         Cell cell = board[x][y];
 
         if (cell.isOpened()) {
-            return cell.getAdjacentBlackHoles();
+            return;
         }
 
         cell.setOpened(true);
-        if (cell.getAdjacentBlackHoles() > 0) {
-            return cell.getAdjacentBlackHoles();
-        }
 
+        if (cell.getAdjacentBlackHoles() > 0) {
+            return;
+        }
 
         openAdjacentCells(x, xf -> ++xf, y, yf -> yf);
         openAdjacentCells(x, xf -> ++xf, y, yf -> ++yf);
@@ -157,8 +157,6 @@ public class Main {
         openAdjacentCells(x, xf -> --xf, y, yf -> ++yf);
         openAdjacentCells(x, xf -> --xf, y, yf -> yf);
         openAdjacentCells(x, xf -> --xf, y, yf -> --yf);
-
-        return 0;
     }
 
     public static void addAdjacentBlackHole(int x, int y) {
@@ -171,9 +169,8 @@ public class Main {
     }
 
     public static void printBoard(int xSelected, int ySelected, boolean openBoard) {
+
         StringBuilder sb = new StringBuilder();
-
-
         sb.append("\nXY\t");
         for (int x = 0; x < MAX_SIZE; x++) {
             sb.append("x"+x+"\t");
