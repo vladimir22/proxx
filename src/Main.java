@@ -7,14 +7,14 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    public static Integer MAX_SIZE = 10; // Width and length of board
-    public static Integer NUM_HOLES = 5; // Number of holes in the board
+    private static Integer MAX_SIZE = 10; // Width and length of board
+    private static Integer NUM_HOLES = 5; // Number of holes in the board
 
     // The Board
     static private Cell[][] board;
 
     // Cell of the board
-    public static class Cell {
+    private static class Cell {
         private boolean isOpened;
         private boolean isBlackHole;
         private int adjacentBlackHoles; // number of neighbour black holes
@@ -51,7 +51,7 @@ public class Main {
     }
 
 
-    public static void createBoard() {
+    private static void createBoard() {
 
         // Init board
         board = new Cell[MAX_SIZE][MAX_SIZE];
@@ -91,11 +91,11 @@ public class Main {
     }
 
 
-    public static void play() {
+    private static void play() {
 
         Scanner sc = new Scanner(System.in);
 
-        while (hiddenCellsExists()) {
+        while (isHiddenCellsExist()) {
 
             System.out.println(String.format("Enter X and Y", MAX_SIZE));
             int x = sc.nextInt();
@@ -118,11 +118,10 @@ public class Main {
 
         System.out.println("Congratulations!!! You WIN !!!");
         printBoard(0,0, true);
-
     }
 
 
-    public static boolean hiddenCellsExists() {
+    private static boolean isHiddenCellsExist() {
         return Arrays.stream(board)
                 .flatMap(Stream::of)
                 .filter(c -> !c.isOpened() && !c.isBlackHole()) // check the board on existence not opened cells
@@ -131,7 +130,7 @@ public class Main {
     }
 
 
-    public static void openAdjacentCells(int xToOpen, IntFunction<Integer> xToOpenFunction, int yToOpen, IntFunction<Integer> yToOpenFunction) {
+    private static void openAdjacentCells(int xToOpen, IntFunction<Integer> xToOpenFunction, int yToOpen, IntFunction<Integer> yToOpenFunction) {
         int x = xToOpenFunction.apply(xToOpen);
         int y = yToOpenFunction.apply(yToOpen);
 
@@ -159,7 +158,7 @@ public class Main {
         openAdjacentCells(x, xf -> --xf, y, yf -> --yf);
     }
 
-    public static void addAdjacentBlackHole(int x, int y) {
+    private static void addAdjacentBlackHole(int x, int y) {
         if (x >= MAX_SIZE || x < 0 || y >= MAX_SIZE || y < 0) {
             return;
         }
@@ -168,7 +167,7 @@ public class Main {
         cell.setAdjacentBlackHoles(++adjacentHoles);
     }
 
-    public static void printBoard(int xSelected, int ySelected, boolean openBoard) {
+    private static void printBoard(int xSelected, int ySelected, boolean openBoard) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("\nXY\t");
