@@ -2,7 +2,7 @@
 Java implementation of  https://proxx.app game
 
 ## Usage example
-Copy paste content of [src/Main.java](./src/Main.java) class into any online compiller like [onlinegdb](https://www.onlinegdb.com/online_java_compiler)
+Copy paste content of [Main.java](./src/Main.java) class into any online compiller like [onlinegdb](https://www.onlinegdb.com/online_java_compiler)
 
 
 Click `run` button and play, example:
