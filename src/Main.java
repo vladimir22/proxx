@@ -97,15 +97,15 @@ public class Main {
 
         while (isHiddenCellsExist()) {
 
-            System.out.println(String.format("Enter X and Y", MAX_SIZE));
+            System.out.println(String.format("\n\nEnter X and Y", MAX_SIZE));
             int x = sc.nextInt();
             int y = sc.nextInt();
 
             Cell cell = board[x][y];
 
             if (cell.isBlackHole()) {
-                System.out.println("Game Over! Black Hole has been opened ...");
                 printBoard(x,y, true);
+                System.out.println("Game Over! Black Hole has been opened ...");
                 return;
             }
             if (cell.getAdjacentBlackHoles() == 0) {
@@ -116,8 +116,8 @@ public class Main {
             printBoard(x,y, false);
         }
 
-        System.out.println("Congratulations!!! You WIN !!!");
         printBoard(0,0, true);
+        System.out.println("Congratulations!!! You WIN !!!");
     }
 
 
