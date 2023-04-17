@@ -2,6 +2,13 @@ name: Java CI
 
 on: [push]
 
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+  pull-requests: write
+
+
 ## Build maven project: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven#using-the-maven-starter-workflow
 jobs:
   build:
@@ -28,8 +35,3 @@ jobs:
           path: target/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: true
-
-
-permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read  # This is required for actions/checkout
