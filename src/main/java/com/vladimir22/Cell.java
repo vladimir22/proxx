@@ -1,4 +1,4 @@
-package com.valdimir22;
+package com.vladimir22;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

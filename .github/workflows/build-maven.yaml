@@ -2,12 +2,12 @@ name: Java CI
 
 on: [push]
 
-permissions:
+permissions: ## https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs#overview
   id-token: write
   contents: read
   issues: write
   pull-requests: write
-  checks: write
+  checks: write  ## fixed an Error: HttpError: Resource not accessible by integration: https://github.com/dorny/test-reporter/issues/149#issuecomment-1004820190
 
 
 ## Build maven project: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven#using-the-maven-starter-workflow

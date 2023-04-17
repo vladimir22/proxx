@@ -1,4 +1,4 @@
-package com.valdimir22;
+package com.vladimir22;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,6 @@ public class ProxxGame {
 
 
     public void initBoard() {
-
         int maxCells = Math.multiplyExact(maxSize,maxSize);
 
         // Validate incoming parameters
@@ -29,7 +28,6 @@ public class ProxxGame {
         if (maxSize < 0 ){
             throw new IllegalArgumentException(String.format("Incorrect max size of the board: %s", maxSize));
         }
-
 
         createBoard();
 

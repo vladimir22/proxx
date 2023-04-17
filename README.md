@@ -2,10 +2,19 @@
 Java implementation of  https://proxx.app game
 
 ## Usage example
-Copy paste content of [Main.java](./src/Main.java) class into any online compiller like [onlinegdb](https://onlinegdb.com/L5rtU1BXL)
 
+- Build & run project:
+```sh
+mvn clean install 
 
-Click `run` button and play, example:
+MAX_BOARD_SIZE=10
+NUM_BLACK_HOLES=10
+
+mvn compile exec:java -Dexec.mainClass="com.vladimir22.Main" -Dexec.args="$MAX_BOARD_SIZE $NUM_BLACK_HOLES"
+```
+  
+
+Play game, example:
 
 ```sh
 Enter X and Y
