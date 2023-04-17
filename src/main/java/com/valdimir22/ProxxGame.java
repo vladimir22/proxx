@@ -79,7 +79,7 @@ public class ProxxGame {
 
         Scanner sc = new Scanner(System.in);
 
-        while (isHiddenCellsExist()) {
+        while (isHiddenCellExists()) {
 
             // Enter coordinates
             System.out.println(String.format("\n\nEnter X and Y coordinates from 0 to %s", maxSize-1));
@@ -113,7 +113,7 @@ public class ProxxGame {
     }
 
 
-    private boolean isHiddenCellsExist() {
+    private boolean isHiddenCellExists() {
         return Arrays.stream(board)
                 .flatMap(Stream::of)
                 .filter(c -> !c.isOpened() && !c.isBlackHole()) // check the board on existence not opened cells
