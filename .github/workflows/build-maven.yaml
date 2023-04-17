@@ -7,6 +7,7 @@ permissions:
   contents: read
   issues: write
   pull-requests: write
+  checks: write
 
 
 ## Build maven project: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven#using-the-maven-starter-workflow
