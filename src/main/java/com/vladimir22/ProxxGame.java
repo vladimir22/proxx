@@ -1,27 +1,31 @@
 package com.vladimir22;
 
-import lombok.RequiredArgsConstructor;
-
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor
+
 public class ProxxGame {
+
+    public static final Integer WIN = 0;
+    public static final Integer LOSE = 1;
+
 
     private final Integer maxSize; // Width and length of board
     private final Integer numBlackHoles; // Number of holes in the board
 
     // The Board
-    protected Cell[][] board;
+    Cell[][] board;
 
-
-    public void initBoard() {
-        int maxCells = Math.multiplyExact(maxSize,maxSize);
+    public ProxxGame(Integer maxSize, Integer numBlackHoles) {
 
         // Validate incoming parameters
+        int maxCells = Math.multiplyExact(maxSize,maxSize);
+
         if (numBlackHoles < 0 || numBlackHoles > maxCells){
             throw new IllegalArgumentException(String.format("Incorrect number of black holes: %s", numBlackHoles));
         }
@@ -29,9 +33,11 @@ public class ProxxGame {
             throw new IllegalArgumentException(String.format("Incorrect max size of the board: %s", maxSize));
         }
 
-        createBoard();
+        this.maxSize = maxSize;
+        this.numBlackHoles = numBlackHoles;
+    }
 
-        // Set random blackHoles
+    void assignRandomBlackHoles() {
         Random random = new Random();
         int i = 0;
         while (i < numBlackHoles) {
@@ -49,40 +55,47 @@ public class ProxxGame {
 
             cell.setBlackHole(true);
 
-            calculateAdjacentBlackHoles(x,y);
+            iterateAdjacentCells(x, y, (xx, yy) -> addAdjacentBlackHole(xx, yy));
             i++;
         }
     }
 
-    protected void createBoard() {
+    void createBoard() {
         board = new Cell[maxSize][maxSize];
         for (int y = 0; y < maxSize; y++)
             for (int x = 0; x < maxSize; x++)
                 board[x][y] = new Cell();
     }
 
-    protected void calculateAdjacentBlackHoles(int x, int y) {
-        // Calculate adjacent BalckHoles in the nearby cells
+    void iterateAdjacentCells(int x, int y, BiConsumer<Integer,Integer> biConsumer) {
         for (int xx=x-1; xx<=x+1; xx++) {
+            if (xx < 0 || xx > maxSize-1) {
+                continue; // skip non-existing cell coordinate
+            }
             for (int yy = y - 1; yy <= y + 1; yy++) {
+                if (yy < 0 || yy > maxSize-1) {
+                    continue; // skip non-existing cell coordinate
+                }
                 if (xx == x && yy == y) {
                     continue; // skip original cell coordinate
                 }
-                addAdjacentBlackHole(xx, yy);
+                biConsumer.accept(xx, yy);
             }
         }
     }
 
-    public void play() {
+    public int play(InputStream is) {
 
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(is);
 
-        while (isHiddenCellExists()) {
+        // Enter coordinates
+        int x = 0;
+        int y = 0;
+        while (true) {
 
-            // Enter coordinates
             System.out.println(String.format("\n\nEnter X and Y coordinates from 0 to %s", maxSize-1));
-            int x = sc.nextInt();
-            int y = sc.nextInt();
+            x = sc.nextInt();
+            y = sc.nextInt();
 
             // Validate coordinates
             if (x < 0 || x >= maxSize && y < 0 || y >= maxSize) {
@@ -95,28 +108,30 @@ public class ProxxGame {
             if (cell.isBlackHole()) {
                 printBoard(x,y, true);
                 System.out.println("Game Over! Black Hole has been opened ...");
-                return;
+                return LOSE;
             }
             if (cell.getAdjacentBlackHoles() == 0) {
                 openAdjacentCells(x, xf -> xf, y, yf -> yf); // open nearby cells
             } else {
                 cell.setOpened(true);
             }
-            printBoard(x,y, false);
-        }
 
-        printBoard(0,0, true);
-        System.out.println("Congratulations!!! You WIN !!!");
-        return;
+            if (isBoardAlreadyOpened()) {
+                printBoard(x,y, true);
+                System.out.println("Congratulations!!! You WIN !!!");
+                return WIN;
+            }
+
+        }
     }
 
 
-    private boolean isHiddenCellExists() {
+    private boolean isBoardAlreadyOpened() {
         return Arrays.stream(board)
                 .flatMap(Stream::of)
                 .filter(c -> !c.isOpened() && !c.isBlackHole()) // check the board on existence not opened cells
                 .findAny()
-                .isPresent();
+                .isEmpty();
     }
 
 
@@ -151,7 +166,7 @@ public class ProxxGame {
     }
 
 
-    private void addAdjacentBlackHole(int x, int y) {
+    void addAdjacentBlackHole(int x, int y) {
         if (x >= maxSize || x < 0 || y >= maxSize || y < 0) {
             return;
         }
@@ -161,7 +176,7 @@ public class ProxxGame {
     }
 
 
-    protected void printBoard(int xSelected, int ySelected, boolean openBoard) {
+    void printBoard(int xSelected, int ySelected, boolean openBoard) {
 
         StringBuilder sb = new StringBuilder();
         sb.append("\nXY\t");
