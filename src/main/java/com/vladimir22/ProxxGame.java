@@ -14,18 +14,14 @@ public class ProxxGame {
     public static final Integer WIN = 0;
     public static final Integer LOSE = 1;
 
-
     private final Integer maxSize; // Width and length of board
     private final Integer numBlackHoles; // Number of holes in the board
 
-    // The Board
     Cell[][] board;
 
     public ProxxGame(Integer maxSize, Integer numBlackHoles) {
-
-        // Validate incoming parameters
+        // Validate incoming args
         int maxCells = Math.multiplyExact(maxSize,maxSize);
-
         if (numBlackHoles < 0 || numBlackHoles > maxCells){
             throw new IllegalArgumentException(String.format("Incorrect number of black holes: %s", numBlackHoles));
         }
@@ -35,6 +31,13 @@ public class ProxxGame {
 
         this.maxSize = maxSize;
         this.numBlackHoles = numBlackHoles;
+    }
+
+    void createBoard() {
+        board = new Cell[maxSize][maxSize];
+        for (int y = 0; y < maxSize; y++)
+            for (int x = 0; x < maxSize; x++)
+                board[x][y] = new Cell();
     }
 
     void assignRandomBlackHoles() {
@@ -60,11 +63,13 @@ public class ProxxGame {
         }
     }
 
-    void createBoard() {
-        board = new Cell[maxSize][maxSize];
-        for (int y = 0; y < maxSize; y++)
-            for (int x = 0; x < maxSize; x++)
-                board[x][y] = new Cell();
+    void addAdjacentBlackHole(int x, int y) {
+        if (x >= maxSize || x < 0 || y >= maxSize || y < 0) {
+            return;
+        }
+        Cell cell = board[x][y];
+        int adjacentHoles = cell.getAdjacentBlackHoles();
+        cell.setAdjacentBlackHoles(++adjacentHoles);
     }
 
     void iterateAdjacentCells(int x, int y, BiConsumer<Integer,Integer> biConsumer) {
@@ -84,13 +89,12 @@ public class ProxxGame {
         }
     }
 
+
     public int play(InputStream is) {
-
         Scanner sc = new Scanner(is);
-
-        // Enter coordinates
         int x = 0;
         int y = 0;
+
         while (true) {
 
             System.out.println(String.format("\n\nEnter X and Y coordinates from 0 to %s", maxSize-1));
@@ -121,19 +125,16 @@ public class ProxxGame {
                 System.out.println("Congratulations!!! You WIN !!!");
                 return WIN;
             }
-
         }
     }
-
 
     private boolean isBoardAlreadyOpened() {
         return Arrays.stream(board)
                 .flatMap(Stream::of)
-                .filter(c -> !c.isOpened() && !c.isBlackHole()) // check the board on existence not opened cells
+                .filter(c -> !c.isOpened() && !c.isBlackHole()) // check the board on existence of not opened cells
                 .findAny()
                 .isEmpty();
     }
-
 
     private void openAdjacentCells(int xToOpen, IntFunction<Integer> xToOpenFunction, int yToOpen, IntFunction<Integer> yToOpenFunction) {
         int x = xToOpenFunction.apply(xToOpen);
@@ -165,35 +166,22 @@ public class ProxxGame {
         openAdjacentCells(x, xf -> ++xf, y, yf -> --yf);
     }
 
-
-    void addAdjacentBlackHole(int x, int y) {
-        if (x >= maxSize || x < 0 || y >= maxSize || y < 0) {
-            return;
-        }
-        Cell cell = board[x][y];
-        int adjacentHoles = cell.getAdjacentBlackHoles();
-        cell.setAdjacentBlackHoles(++adjacentHoles);
-    }
-
-
     void printBoard(int xSelected, int ySelected, boolean openBoard) {
-
         StringBuilder sb = new StringBuilder();
         sb.append("\nXY\t");
         for (int x = 0; x < maxSize; x++) {
             sb.append("x"+x+"\t");
         }
-
         for (int y = 0; y < maxSize; y++) {
             sb.append("\ny"+y+"");
             for (int x = 0; x < maxSize; x++) {
                 sb.append("\t");
+
                 Cell cell = board[x][y];
 
                 if (x == xSelected && y == ySelected) {
                     sb.append("[");
                 }
-
                 if (cell.isOpened() || openBoard) {
                     if (cell.isBlackHole()) {
                         sb.append("*");
@@ -203,7 +191,6 @@ public class ProxxGame {
                 } else {
                     sb.append(".");
                 }
-
                 if (x == xSelected && y == ySelected) {
                     sb.append("]");
                 }
@@ -211,5 +198,4 @@ public class ProxxGame {
         }
         System.out.println(sb);
     }
-
 }
