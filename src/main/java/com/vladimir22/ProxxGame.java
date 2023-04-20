@@ -2,6 +2,7 @@ package com.vladimir22;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
@@ -97,9 +98,15 @@ public class ProxxGame {
 
         while (true) {
 
-            System.out.println(String.format("\n\nEnter X and Y coordinates from 0 to %s", maxSize-1));
-            x = sc.nextInt();
-            y = sc.nextInt();
+            try {
+                System.out.println(String.format("\n\nEnter X and Y coordinates from 0 to %s", maxSize-1));
+                x = sc.nextInt();
+                y = sc.nextInt();
+            } catch (InputMismatchException e ){
+               System.out.println("Incorrect input, please try again");
+               sc.nextLine();
+               continue;
+            }
 
             // Validate coordinates
             if (x < 0 || x >= maxSize && y < 0 || y >= maxSize) {
@@ -125,6 +132,7 @@ public class ProxxGame {
                 System.out.println("Congratulations!!! You WIN !!!");
                 return WIN;
             }
+            printBoard(x,y, false);
         }
     }
 
