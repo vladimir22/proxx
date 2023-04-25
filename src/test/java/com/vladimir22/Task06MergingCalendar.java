@@ -11,11 +11,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// TODO: tests!!!
+
 public class Task06MergingCalendar {
-
-
-
     /**
      * Your company built an in-house calendar tool called HiCal.
      * You want to add a feature to see the times in a day when everyone is available.
@@ -90,51 +87,40 @@ public class Task06MergingCalendar {
         return newList;
     }
 
+    
+    
     @Test
     void name() {
-
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
-
         List<Meeting> meetings = List.of(
                 new Meeting(0, 1), new Meeting(3, 7),
                 new Meeting(4, 5), new Meeting(4, 8), new Meeting(4, 7),
                 new Meeting(9, 10), new Meeting(10, 12));
-
-
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
-
-
         System.out.println(mergedMeetings);
     }
 
 
     @Test
     void name2() {
-
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
-
         List<Meeting> meetings = List.of(
                 new Meeting(1, 10), new Meeting(2, 5), new Meeting(6, 8)
                 );
-
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
-
         System.out.println(mergedMeetings);
     }
 
 
     @Test
     void name3() {
-
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
-
         List<Meeting> meetings = List.of(
                 new Meeting(1, 2), new Meeting(2, 3), new Meeting(1, 3)
         );
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
         System.out.println(mergedMeetings);
     }
-
 
 
     @Data
