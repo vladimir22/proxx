@@ -2,6 +2,7 @@ package com.vladimir22;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class Task06MergingCalendar {
@@ -55,7 +58,7 @@ public class Task06MergingCalendar {
 
         ArrayList<Meeting> mergedMeetings = new ArrayList<>();
 
-        // Filter out and merge condensed/intersected meetings, example: [ Meeting(0, 1), Meeting(3, 7), Meeting(4, 5), Meeting(4, 8), Meeting(4, 7), Meeting(9, 10), Meeting(10, 12)]
+        // Filter out and merge condensed/intersected meetings
         for (Meeting currentMeeting : sortedMeetings ) {
 
             if (mergedMeetings.size() == 0) {
@@ -64,10 +67,6 @@ public class Task06MergingCalendar {
             }
             Meeting previousMeeting = mergedMeetings.get(mergedMeetings.size()-1);
 
-            if (currentMeeting.getStartTime() == previousMeeting.getStartTime() && currentMeeting.getEndTime() == previousMeeting.getEndTime()) {
-                continue; // not include duplicates
-            }
-
             if (currentMeeting.getStartTime() > previousMeeting.getEndTime()) {
                 mergedMeetings.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
                 continue; // add meeting that not intersect with previous
@@ -75,7 +74,7 @@ public class Task06MergingCalendar {
 
             if ( previousMeeting.getEndTime() < currentMeeting.getEndTime()){
                 previousMeeting.setEndTime(currentMeeting.getEndTime());
-                continue; // shift meeting endTime if intersects with previous
+                continue; // shift meeting endTime if it intersects with previous
             }
         }
         return mergedMeetings;
@@ -84,44 +83,64 @@ public class Task06MergingCalendar {
     
     
     @Test
-    void name() {
+    void mergeRangesTest_IntersectedAndDuplicatedMeetings() {
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
         List<Meeting> meetings = List.of(
-                new Meeting(0, 1), new Meeting(3, 7),
-                new Meeting(4, 5), new Meeting(4, 8), new Meeting(4, 7),
-                new Meeting(9, 10), new Meeting(10, 12));
+                new Meeting(0, 1), new Meeting(2, 3), // not intersected meetings
+                new Meeting(4, 5), new Meeting(4, 8), new Meeting(4, 7), // intersected meetings
+                new Meeting(9, 10), new Meeting(12, 13), new Meeting(9, 10), new Meeting(12, 14)); // duplicated + intersected meetings
+
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
+
         System.out.println(mergedMeetings);
+        assertThat(mergedMeetings.toArray(), Matchers.arrayContaining(
+                new Meeting(0, 1), new Meeting(2, 3), // not intersected meetings stay the same
+                new Meeting(4, 8), // intersected meetings have been merged
+                new Meeting(9, 10), new Meeting(12, 14))); // repeated meeting has been removed
     }
 
 
     @Test
-    void name2() {
+    void mergeRangesTest_MeetingsMergedIntoOne() {
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
         List<Meeting> meetings = List.of(
-                new Meeting(1, 10), new Meeting(2, 5), new Meeting(6, 8)
+                new Meeting(1, 10), // all meeting will be merged into one
+                new Meeting(2, 3), new Meeting(4, 5),
+                new Meeting(5, 6), new Meeting(5, 7), new Meeting(5, 8),
+                new Meeting(2, 9), new Meeting(2, 11)
                 );
+
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
+
         System.out.println(mergedMeetings);
+        assertThat(mergedMeetings.toArray(), Matchers.arrayContaining(
+                new Meeting(1, 11))); // all meetings have been merged into one
     }
 
 
     @Test
-    void name3() {
+    void mergeRangesTest_MergeNonSortedMeetings() {
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
         List<Meeting> meetings = List.of(
-                new Meeting(1, 2), new Meeting(2, 3), new Meeting(1, 3)
+                new Meeting(1, 2), new Meeting(2, 3), new Meeting(1, 3) , new Meeting(2, 4),
+                new Meeting(6, 7), new Meeting(5, 6), new Meeting(7, 8),
+                new Meeting(9, 10), new Meeting(9, 12), new Meeting(9, 11)
         );
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
         System.out.println(mergedMeetings);
+        assertThat(mergedMeetings.toArray(), Matchers.arrayContaining(
+                new Meeting(1, 4), // meetings have been sorted and merged
+                new Meeting(5, 8),
+                new Meeting(9, 12))
+        );
     }
 
 
     @Data
     @NoArgsConstructor
     public static class Meeting {
-        public long startTime;
-        public long endTime;
+        private long startTime;
+        private long endTime;
 
         public Meeting(final long startTime, final long endTime) {
             if (startTime > endTime) {
