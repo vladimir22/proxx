@@ -69,7 +69,7 @@ public class Task06MergingCalendar {
 
             if (currentMeeting.getStartTime() > previousMeeting.getEndTime()) {
                 mergedMeetings.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
-                continue; // add meeting that not intersect with previous
+                continue; // add meeting that is not intersected with previous
             }
 
             if ( previousMeeting.getEndTime() < currentMeeting.getEndTime()){
