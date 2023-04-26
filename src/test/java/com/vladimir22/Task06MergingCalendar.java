@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -51,40 +50,38 @@ public class Task06MergingCalendar {
      */
     public List<Meeting> mergeRanges (final Collection<Meeting> allMeetings) {
 
-        Comparator<Meeting> comparing = Comparator.comparing(Meeting::getStartTime);
-        List<Meeting> sortedList = allMeetings.stream().sorted(comparing).collect(Collectors.toList());
+        Comparator<Meeting> comparatorByStartTime = Comparator.comparing(Meeting::getStartTime);
+        List<Meeting> sortedMeetings = allMeetings.stream().sorted(comparatorByStartTime).collect(Collectors.toList());
 
 
-        ArrayList<Meeting> newList = new ArrayList<>();
+        ArrayList<Meeting> mergedMeetings = new ArrayList<>();
 
-        // [ Meeting(0, 1), Meeting(3, 5), Meeting(4, 8), Meeting(10, 12), Meeting(9, 10) ]
+        // Filter out and merge condensed/intersected meetings:
         // [ Meeting(0, 1), Meeting(3, 7), Meeting(4, 5), Meeting(4, 8), Meeting(4, 7), Meeting(9, 10), Meeting(10, 12),  ]
+        for (Meeting currentMeeting : sortedMeetings ) {
 
-        for (Meeting currentMeeting : sortedList ) {
-
-            if (newList.size() == 0) {
-                newList.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
+            if (mergedMeetings.size() == 0) {
+                mergedMeetings.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
                 continue;
             }
 
-            Meeting previousMeeting = newList.get(newList.size()-1);
+            Meeting previousMeeting = mergedMeetings.get(mergedMeetings.size()-1);
 
             if (currentMeeting.getStartTime() == previousMeeting.getStartTime() && currentMeeting.getEndTime() == previousMeeting.getEndTime()) {
                 continue; // not include duplicates
             }
 
             if (currentMeeting.getStartTime() > previousMeeting.getEndTime()) {
-                newList.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
-                continue; // case when not intersect
+                mergedMeetings.add(new Meeting(currentMeeting.getStartTime(), currentMeeting.getEndTime()));
+                continue; // add meeting that not intersect with previous
             }
 
             if ( previousMeeting.getEndTime() < currentMeeting.getEndTime()){
                 previousMeeting.setEndTime(currentMeeting.getEndTime());
-                continue; // shift endTime if startTime equals
+                continue; // shift meeting endTime if intersects with previous
             }
         }
-
-        return newList;
+        return mergedMeetings;
     }
 
     
