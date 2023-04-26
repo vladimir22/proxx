@@ -139,11 +139,11 @@ public class IterateMultipleIterators {
         SingleArray<Integer> a0 = new SingleArray<>(new Integer[]{6, 8, 19, 21, 32, 66, 67, 77, 89});
         SingleArray<Integer> a1 = new SingleArray<>(new Integer[]{1, 3, 5,  24, 33, 45, 57, 59, 89});
         SingleArray<Integer> a2 = new SingleArray<>(new Integer[]{2, 4, 9,  18, 22, 44, 46, 89, 89});
-       // Create corresponding corparator
+       // Create corresponding comparator
         Comparator<Integer> comparator = Comparator.comparingInt(Integer::intValue);
 
-        // Create MultiArray that will iterate multiple array iterators
-        MultiArray<Integer> multiArray = new MultiArray<Integer>(comparator, a0.iterator(), a1.iterator(), a2.iterator());
+        // Create MultiArray that will iterate multiple iterators
+        MultiArray<Integer> multiArray = new MultiArray<>(comparator, a0.iterator(), a1.iterator(), a2.iterator());
 
         System.out.println("--- Iterate multiArray ---");
         for (Integer s : multiArray) {
@@ -165,7 +165,7 @@ public class IterateMultipleIterators {
         Comparator<Integer> comparator = Comparator.comparingInt(Integer::intValue);
 
         // Create MultiArray that will iterate multiple array iterators
-        MultiArray<Integer> multiArray = new MultiArray<Integer>(comparator, a0.iterator(), a1.iterator(), a2.iterator());
+        MultiArray<Integer> multiArray = new MultiArray<>(comparator, a0.iterator(), a1.iterator(), a2.iterator());
 
         List<Integer> list = new ArrayList<>();
         multiArray.iterator().forEachRemaining(list::add);
