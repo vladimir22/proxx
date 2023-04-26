@@ -87,7 +87,7 @@ public class Task06MergingCalendar {
         Task06MergingCalendar task06MergingCalendar = new Task06MergingCalendar();
         List<Meeting> meetings = List.of(
                 new Meeting(0, 1), new Meeting(2, 3), // not intersected meetings
-                new Meeting(4, 5), new Meeting(4, 8), new Meeting(4, 7), // intersected meetings
+                new Meeting(4, 5), new Meeting(5, 8), new Meeting(4, 7), // intersected meetings
                 new Meeting(9, 10), new Meeting(12, 13), new Meeting(9, 10), new Meeting(12, 14)); // duplicated + intersected meetings
 
         List<Meeting> mergedMeetings = task06MergingCalendar.mergeRanges(meetings);
@@ -96,7 +96,7 @@ public class Task06MergingCalendar {
         assertThat(mergedMeetings.toArray(), Matchers.arrayContaining(
                 new Meeting(0, 1), new Meeting(2, 3), // not intersected meetings stay the same
                 new Meeting(4, 8), // intersected meetings have been merged
-                new Meeting(9, 10), new Meeting(12, 14))); // repeated meeting has been removed
+                new Meeting(9, 10), new Meeting(12, 14))); // repeated meetings have been removed
     }
 
 
